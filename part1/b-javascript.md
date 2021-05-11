@@ -151,3 +151,69 @@ const average = function(a, b) {
 const result = average(2, 5)
 // result is now 3.5
 ```
+
+## Object methods and "this"
+
+*The contents of this chapter are not relevant to the course because we use a version of React called React Hooks, which removes the need for defining objects with methods.*
+
+We can assign methods to an object by defining properties that are functions:
+
+```javascript
+const arto = {
+    name: 'Arto Hellas',
+    age: 35,
+    education: 'PhD',
+    greet: function() {
+        console.log('hello, my name is ' + this.name)
+    },
+}
+
+arto.greet()  // "hello, my name is Arto Hellas" gets printed
+```
+
+We can also call a method through a reference variable, rather than through the method itself. However, in some cases we can run into an issue where the method loses knowledge of what was the original `this`. In this course, we avoid this issue by using this-less JavaScript.
+
+```javascript
+arto.greet()       // "hello, my name is Arto Hellas" gets printed
+
+const referenceToGreet = arto.greet
+referenceToGreet() // prints "hello, my name is undefined"
+```
+
+The original `this` can be preserved by using a method called `bind`.
+
+```javascript
+setTimeout(arto.greet.bind(arto), 1000)
+```
+
+## Classes
+
+There are no classes in JavaScript as it is not an object-oriented programming language (OOP). However, there are classes which simulate object-oriented classes.
+
+The type of both classes and objects created from them are actually both `Object`, as JavaScript does not support a `Class` data type.
+
+```javascript
+class Person {
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+  greet() {
+    console.log('hello, my name is ' + this.name)
+  }
+}
+
+const adam = new Person('Adam Ondra', 35)
+adam.greet()
+
+const janja = new Person('Janja Garnbret', 22)
+janja.greet()
+```
+
+## JavaScript materials
+
+ - Mozilla's [JavaScript guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+ - Mozilla's [re-introduction to JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)
+ - You Dont Know JS Yet book series, hosted on [Github](https://github.com/getify/You-Dont-Know-JS)
+ - [The Modern JavaScript Tutorial](https://javascript.info/)
+ - [egghead.io](https://egghead.io/)
