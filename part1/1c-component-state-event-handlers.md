@@ -1,4 +1,4 @@
-# Component state, event handlers
+# Part 1 - (c) Component state, event handlers
 
 ## Component helper functions
 
