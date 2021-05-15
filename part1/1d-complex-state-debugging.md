@@ -167,5 +167,4 @@ Never define components inside other components as this can lead to many unpleas
 ## Useful reading
 
  - [Official React documentation](https://reactjs.org/docs/hello-world.html)
- - Egghead [Start Learning React](https://egghead.io/courses/start-learning-react) course
- - Egghead [The Beginner's Guide to React](https://egghead.io/courses/the-beginner-s-guide-to-react) course
+ - 
