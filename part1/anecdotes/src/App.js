@@ -13,7 +13,7 @@ const App = () => {
     const [selected, setSelected] = useState(0)
 
     const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0])
-    
+
     const random = () => {
         return Math.floor(Math.random() * 6)
     }
@@ -24,7 +24,7 @@ const App = () => {
         console.log(copy)
         return copy
     }
-    
+
     return (
         <div>
             <Title text='Anecdote of the day' />
