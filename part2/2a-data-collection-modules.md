@@ -285,5 +285,4 @@ const Course = ({ course }) => {
 }
 ```
 
- - We can also run `console.log(props)` to see what `props` actually contains. Errors often arise due to props being of the wrong type, or being called with a different name thant they actually are.
- - 
+ - We can also run `console.log(props)` to see what `props` actually contains. Errors often arise due to props being of the wrong type, or being called with a different name than they actually are.
