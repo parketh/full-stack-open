@@ -70,7 +70,23 @@ We can add a piece of state the the `App` component to keep track of and control
 const [showAll, setShowAll] = useState(true)
 ```
 
-In the example above, some of the notes are marked as "Important". We can create a new `notesToShow` variable, which includes all notes if `showAll` is set to `true`, and includes only the important notes if `showAll` is set to `false`.
+ - In the example above, some of the notes are marked as "Important". 
+ - We can create a new `notesToShow` variable, which includes all notes if `showAll` is set to `true`, and includes only the important notes if `showAll` is set to `false`. 
+
+```javascript
+const notesToShow = showAll ? notes : notes.filter(note => note.important)
+```
+
+ - We can then create a button with an `onClick` attribute that triggers a function to invert the value of `showAll`.
+
+```html
+<button onClick={() => setShowAll(!showAll)}>
+    show {showAll ? 'important' : 'all' }
+</button>
+```
+
+The button now controls whether to show all notes or only the important notes.
+
 
 
 
