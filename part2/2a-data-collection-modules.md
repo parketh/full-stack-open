@@ -8,7 +8,7 @@
 
 ## JavaScript Arrays
 
-Recap of functional programming with arrays in JavaScript.
+Recap of functional programming with arrays in JavaScript:
 
 ### 1 - Higher-order functions
 
@@ -51,7 +51,7 @@ var dogs = animals.filter(isDog)
 ### 2 - Map
 
  - Like `filter`, the function `map` is a higher-order function. Rather than filtering through objects in an array, it transforms them. 
- - `map` takes a callback function and passed to each item in the array
+ - `map` takes a callback function and passes this to each item in the array
 
 ```javascript
 var animals = [
@@ -78,7 +78,7 @@ for (var i = 0; i < animals.length; i++) {
  - The code can be further reduced by using arrow notation, which removes the need to write `function()` and `return`.
 
 ```javascript
-var names = animals.map((animal) => animal.name)
+var names = animals.map(animal => animal.name)
 ```
 
 
@@ -99,7 +99,7 @@ var orders = [
 
 var totalAmount = orders.reduce(function(sum, order) {
     return sum + order.amount
-}
+}, 0)
 
 /*
 var totalAmount = 0
@@ -110,8 +110,59 @@ for (var i = 0; i < orders.length; i++) {
  - As before, the `reduce` function can be further reduced in length using arrow notation. 
 
 ```javascript
-var totalAmount = orders.reduce((sum, order) => sum + order.amount)
+var totalAmount = orders.reduce((sum, order) => sum + order.amount, 0)
 ```
 
 ## Rendering Collections
 
+We can render a list of items (like the one in the sample app from Part 0) using frontend, or browser-side, application logic. 
+
+In the example below, `notes` is defined in `index.js` and passed as a prop into `App.js`, which renders the list of notes as HTML code using the `map` function.
+
+**App.js**
+```javascript
+const App = (props) => {
+  const { notes } = props
+
+  return (
+    <div>
+      <h1>Notes</h1>
+      <ul>
+        {notes.map(note => <li>{note.content}</li>)}
+      </ul>
+    </div>
+  )
+}
+```
+
+**index.js**
+```javascript
+import ReactDOM from 'react-dom'
+import App from './App.js'
+
+const notes = [
+  {
+    id: 1,
+    content: 'HTML is easy',
+    date: '2019-05-30T17:30:31.098Z',
+    important: true
+  },
+  {
+    id: 2,
+    content: 'Browser can execute only JavaScript',
+    date: '2019-05-30T18:39:34.091Z',
+    important: false
+  },
+  {
+    id: 3,
+    content: 'GET and POST are the most important methods of HTTP protocol',
+    date: '2019-05-30T19:20:14.298Z',
+    important: true
+  }
+]
+
+ReactDOM.render(
+  <App notes={notes} />,
+  document.getElementById('root')
+)
+```
