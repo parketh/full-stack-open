@@ -16,7 +16,7 @@ npx json-server --port 3001 --watch db.json
 
 Note that `json-server` defaults to port 3000, which is reserved for `create-react-app`, so we define a alternative port (port 3001) instead.
 
-## Fetch data from the server
+## The browser as a runtime environment
 
 One way to fetch data from the server using JavaScript is `XMLHttpRequest`, which is a technique introduced in 1999 but is **no longer recommended**. `XMLHttpRequest` works by:
 
@@ -42,4 +42,44 @@ Today's browsers allow parallelised code to be run using web workers, however th
 - **callback queue / task queue**: functions wrapped within `setTimeout` are pushed onto the task queue, which exists outside of the JS runtime environment. 
 - **event loop**: the job of the event loop is to push the first item in the task queue onto the call stack whenever the call stack is empty. This way, once all of the code has been executed, the tasks pushed to the task queue by `setTimeout` will be executed. In effect these items are pushed to the end of the call stack. 
 
+Lesson of all this is not to put slow code on the call stack because it prevents the browser of doing its proper job, i.e. providing a smooth, fluid UI.
+
 ![](runtime_env.png)
+
+## npm
+
+`npm` is the node package manager, which is used for adding external libraries (npm packages) to React projects. 
+
+Packages are installed by running the following command at the root directory of the project.
+
+```
+npm install [package]
+```
+
+What this command does is:
+
+ 1. Download the library code to the `node_modules` directory
+ 2. Add the package to the `dependencies` object in `packages.json` (also found in the root directory of the project)
+
+We can also use the `scripts` object in `packages.json` to do things like run the server without parameter definitions. 
+
+**packages.json**
+```javascript
+{
+  // ... 
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "json-server -p3001 --watch db.json"
+  },
+}
+```
+
+**command line**
+```
+npm run server
+```
+
+
