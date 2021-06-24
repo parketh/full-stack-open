@@ -27,7 +27,7 @@ Instead, browsers today support the `fetch` method, which is based on the concep
 
 JavaScript engines, or runtime environments:
 
- - follow the **synchronous model**, meaning the event handler is called at a point in time in the future, not immediately
+ - follow the **asynchronous model**, meaning the event handler is called at a point in time in the future, not immediately
  - require all input-output operations to be executed as non-blocking, meaning code execution continues immediately after calling a function, without waiting for it to return
  - are single-threaded, meaning they cannot execute code in parallel
  - can cause the browser to get stuck if code execution takes up a lot of time.
@@ -61,6 +61,16 @@ What this command does is:
  1. Download the library code to the `node_modules` directory
  2. Add the package to the `dependencies` object in `packages.json` (also found in the root directory of the project)
 
+Packages can be installed either as:
+
+ - a **runtime dependency**, meaning the execution of the program requires the existence of the library
+ - a **development dependency**, meaning the library is only required for assistance during software development and the program can run without it.
+
+```
+npm install axios  // runtime dependency
+npm install json-server --save-dev  // development dependency
+```
+
 We can also use the `scripts` object in `packages.json` to do things like run the server without parameter definitions. 
 
 **packages.json**
@@ -82,4 +92,96 @@ We can also use the `scripts` object in `packages.json` to do things like run th
 npm run server
 ```
 
+## Axios and promises
+
+Two terminal windows may be needed to run `json-server` and the `react-app` simultaneously (one to keep the server running and the other to keep the app running).
+
+```js
+import axios from 'axios'
+
+const promise = axios.get('http://localhost:3001/notes')
+console.log(promise)
+
+const promise2 = axios.get('http://localhost:3001/foobar')
+console.log(promise2)
+```
+
+The `get` method returns a **promise**, an object representing the eventual completion or failure of an asynchronous operation. A **promise** has three states:
+
+1. pending: final value is not yet available
+2. fulfilled: operation has completed and final value is available (generally means operation was successful)
+3. rejected: error prevented final value from being determined
+
+In the example above, the first promise is fulfilled but the second promise is rejected. This is because the second address does not exist. 
+
+To access the result of the operation represented by the promise, we use the method `then`, which is an event handler.
+
+```javascript
+const promise = axios.get('http://localhost:3001/notes')
+
+promise.then(response => {
+  console.log(response)
+})
+```
+
+Generally, there is no need to store the promise in its own variable, and instead the `get` and `then` methods can be chained directly, as follows:
+
+```javascript
+axios
+  .get('http://localhost:3001/notes')
+  .then(response => {
+    const notes = response.data
+    console.log(notes)
+  })
+```
+
+The data is now stored in `notes` and can be used.
+
+## Effect-hooks
+
+*Note: This example continues from the example started in Part 2b.*
+
+**Effect hooks** allow you to perform side effects in function components, including:
+
+ - data fetching
+ - setting up a subscription
+ - manually changing the DOM in React components
+ - and more.
+
+In the example below (continued from Part 2b), we use a Request hook to request the notes from the local server inside the `App` component. 
+
+**App.js**
+```javascript
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import Note from './components/Note'
+
+const App = () => {
+  const [notes, setNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+  }, [])
+  console.log('render', notes.length, 'notes')
+
+  // Code from Part 2B
+}
+```
+
+The `useEffect` function takes two parameters:
+
+1. A function which defines the effect
+2. An array which specifies how often the effect (function above) should be run:
+   - Empty array means the effect is only run on the first render
+   - Effect will be run whenever any variables passed into the array change
+
+In this case, the data is requested from the server when the application first runs, stored in the `notes` variable, and displayed on the page.
 
