@@ -5,6 +5,7 @@ const App = () => {
   const [ searchPrompt, setSearchPrompt ] = useState('')
   const [ results, setResults ] = useState([])
   const [ filteredResults, setFilteredResults ] = useState([])
+  const [ profile, setProfile ] = useState('')
 
   useEffect(() => {
     axios
@@ -25,9 +26,12 @@ const App = () => {
   const handlePromptChange = (event) => {
     setSearchPrompt(event.target.value)
     setFilteredResults(results.filter(result => result.name.toLowerCase().search(event.target.value.toLowerCase()) !== -1))
+    setProfile('')
   }
 
-  console.log()
+  const handleProfileChange = (event) => {
+    setProfile(event.target.id)
+  }
 
   if (filteredResults.length > 10) {
     return (
@@ -41,7 +45,7 @@ const App = () => {
     return (
       <div>
         <Search label="find countries" prompt={searchPrompt} handlePromptChange={handlePromptChange} />
-        <Profile countries={filteredResults}/>
+        <Profile countries={filteredResults} profile={filteredResults[0].name} />
       </div>
     );
   }
@@ -49,7 +53,7 @@ const App = () => {
     return (
       <div>
         <Search label="find countries" prompt={searchPrompt} handlePromptChange={handlePromptChange} />
-        <Results countries={filteredResults}/>
+        <Results countries={filteredResults} handleProfileChange={handleProfileChange} profile={profile}/>
       </div>
     );
   }
@@ -65,20 +69,25 @@ const Search = ({ label, prompt, handlePromptChange }) => {
   )
 }
 
-const Results = ({ countries }) => {
+const Results = ({ countries, handleProfileChange, profile }) => {
   return (
     <div>
       {countries.map(country => (
-        <div>{country.name}</div>
+        <div>
+          <span>{country.name} </span>
+          <input type="button" value="show" id={country.name} onClick={handleProfileChange}/>
+        </div>
       ))}
+      <Profile countries={countries} profile={profile} />
     </div>
   )
 }
 
-const Profile = ({ countries }) => {
+const Profile = ({ countries, profile }) => {
+  console.log(profile)
   return (
     <div>
-      {countries.map(country => (
+      {countries.filter(country => country.name === profile).map(country => (
         <div>
           <h2>{country.name}</h2>
           <div>capital {country.capital}</div>
@@ -89,7 +98,7 @@ const Profile = ({ countries }) => {
               <li>{language}</li>
             ))}
           </ul>
-          <img src={country.flag} width="100" />
+          <img src={country.flag} alt={country.name} width="100" />
         </div>
       ))}
     </div>
