@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const App = () => {
   const [ searchPrompt, setSearchPrompt ] = useState('')
   const [ results, setResults ] = useState([])
@@ -45,7 +47,7 @@ const App = () => {
     return (
       <div>
         <Search label="find countries" prompt={searchPrompt} handlePromptChange={handlePromptChange} />
-        <Profile countries={filteredResults} profile={filteredResults[0].name} />
+        <Profile countries={filteredResults} profile={filteredResults[0].name}/>
       </div>
     );
   }
@@ -56,8 +58,7 @@ const App = () => {
         <Results countries={filteredResults} handleProfileChange={handleProfileChange} profile={profile}/>
       </div>
     );
-  }
-  
+  } 
 }
 
 const Search = ({ label, prompt, handlePromptChange }) => {
@@ -78,13 +79,30 @@ const Results = ({ countries, handleProfileChange, profile }) => {
           <input type="button" value="show" id={country.name} onClick={handleProfileChange}/>
         </div>
       ))}
-      <Profile countries={countries} profile={profile} />
+      <Profile countries={countries} profile={profile}/>
     </div>
   )
 }
 
 const Profile = ({ countries, profile }) => {
-  console.log(profile)
+  const [ weather, setWeather ] = useState('')
+
+  const capital = encodeURI(countries.filter(country => country.name === profile).map(country => country.capital)[0])
+
+  console.log("countries: " + JSON.stringify(countries))
+  console.log("profile: " + profile)
+  console.log("capital: " + capital)
+
+  useEffect(() => {
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=London`)
+      .then(response => {
+        setWeather(response.data)
+      })
+  }, [])
+
+  console.log("weather: " + JSON.stringify(weather))
+
   return (
     <div>
       {countries.filter(country => country.name === profile).map(country => (
@@ -99,6 +117,16 @@ const Profile = ({ countries, profile }) => {
             ))}
           </ul>
           <img src={country.flag} alt={country.name} width="100" />
+          <h3>Weather in {country.name}</h3>
+          <div>
+            <b>temperature: </b>
+            <span>{weather.current.temperature} Celsius</span>
+          </div>
+          <img src={weather.current.weather_icons} alt={country.name} width="100" />
+          <div>
+            <b>wind: </b>
+            <span>{weather.current.wind_speed} mph direction {weather.current.wind_dir}</span>
+          </div>
         </div>
       ))}
     </div>
