@@ -89,13 +89,9 @@ const Profile = ({ countries, profile }) => {
 
   const capital = encodeURI(countries.filter(country => country.name === profile).map(country => country.capital)[0])
 
-  console.log("countries: " + JSON.stringify(countries))
-  console.log("profile: " + profile)
-  console.log("capital: " + capital)
-
   useEffect(() => {
     axios
-      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=London`)
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${capital}`)
       .then(response => {
         setWeather(response.data)
       })
