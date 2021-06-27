@@ -6,6 +6,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ prompt, setPrompt ] = useState('')
+  const [ message, setMessage ] = useState('')
 
   useEffect(() => {
     personService
@@ -40,11 +41,22 @@ const App = () => {
         }
         setNewName('')
         setNewNumber('')
+      })
+      .catch(error => {
+        setMessage({text: `Information of ${newName} has already been removed from server`, color: "red"})
+        setTimeout(() => {
+          setMessage('')
+        }, 5000)
+        setPersons(persons.filter(person => person.name !== newName))
       })    
     : personService
         .createPerson(nameObject)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson)) 
+          setPersons(persons.concat(returnedPerson))
+          setMessage({text: `Added ${newName}`, color: "green"})
+          setTimeout(() => {
+            setMessage('')
+          }, 5000)
           setNewName('')
           setNewNumber('')
         })    
@@ -66,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter prompt={prompt} handlePromptChange={handlePromptChange}/>
       <h3>Add a new</h3>
       <PersonForm addEntry={addEntry} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
@@ -107,6 +120,26 @@ const PersonForm = ({ addEntry, newName, newNumber, handleNameChange, handleNumb
         <button type="submit">add</button>
     </form>
   )
+}
+
+const Notification = ({ message }) => {
+  const messageStyle = {
+    backgroundColor: "#ededed",
+    color: message.color,
+    padding: 10,
+    margin: 10
+  }
+  
+  if (message === '') {
+    return (
+      <div></div>
+    )
+  }
+  else {
+    return (
+      <div style={messageStyle}>{message.text}</div>
+    )
+  }
 }
 
 export default App
