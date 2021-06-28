@@ -231,8 +231,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 ```
-
-## VSCode REST client
+## VSCode REST client (needed for adding new resource)
 
 The VSCode REST client is a tool for testing the backend of our application (other tools exist such as Postman or curl, a command line tool). To use it, create a directory at the root of the application named `/requests`, and add requests in files saved with the `.rest` extension, e.g:
 
@@ -243,7 +242,23 @@ GET http://localhost:3001/api/notes
 
 Press the `Send Request` button that appears and the HTTP request will be executed, with a response from the server opened in the editor.
 
+## Adding a new resource
 
+We can add new notes to the server by sending a POST request to the url. The informatiopn for the new note must be contained in the request `body`, in JSON format.
 
+The `body` property of the request is set out in JSON format, meaning it must first be transformed into a JavaScript object before it can be accessed. This is due with the `json-parser` function `app.use(express.json())`.
 
+```javascript
+const express = require('express')
+const app = express()
+
+app.use(express.json())
+
+//...
+
+app.post('/api/notes', (request, response) => {
+  const note = request.body
+  response.json(note)
+})
+```
 
