@@ -244,9 +244,9 @@ Press the `Send Request` button that appears and the HTTP request will be execut
 
 ## Adding a new resource
 
-We can add new notes to the server by sending a POST request to the url. The informatiopn for the new note must be contained in the request `body`, in JSON format.
+We can add new notes to the server by sending a POST request to the url. The information for the new note must be contained in the request `body`, in JSON format.
 
-The `body` property of the request is set out in JSON format, meaning it must first be transformed into a JavaScript object before it can be accessed. This is due with the `json-parser` function `app.use(express.json())`.
+The `body` property of the request is set out in JSON format, meaning it must first be transformed into a JavaScript object before it can be accessed. This is done with the `json-parser` function `app.use(express.json())`, which allows the event handler function to access data from the `body` property.
 
 ```javascript
 const express = require('express')
@@ -257,8 +257,35 @@ app.use(express.json())
 //...
 
 app.post('/api/notes', (request, response) => {
+   const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => n.id)) 
+    : 0
+
   const note = request.body
+  note.id = maxId + 1
+
+  notes = notes.concat(note)
+
   response.json(note)
 })
 ```
+
+The version above does not prevent the user from adding objects with arbitrary properties. To prevent this from happening, we can give certain properties **default values**.
+
+
+
+
+To test this in the VSCode REST client, we can use a `.post` file with the request specified in the following format (request method, headers and body):
+
+```
+POST http://localhost:3001/api/notes/
+Content-Type: application/json
+
+{
+    "content": "VS Code REST client is pretty good",
+    "important": false
+}
+```
+
+Multiple requests can be sent by using the `###` seperator.
 
