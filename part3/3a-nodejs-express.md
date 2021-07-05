@@ -270,10 +270,41 @@ app.post('/api/notes', (request, response) => {
 })
 ```
 
-The version above does not prevent the user from adding objects with arbitrary properties. To prevent this from happening, we can give certain properties **default values**.
+The version above does not prevent the user from adding objects with arbitrary properties. To prevent this from happening, we can give certain properties **default values**:
 
+ - the new `generateId` function makes use of `.map()` to create a new array of the note `id`s, then uses spread syntax to convert the array to individual numbers that can be passed into `Math.max`
+ - `body.important || false` returns either the value of the `important` property or `false` if this does not exist
+ - `newDate()` is now created on the server rather than the client side
 
+```javascript
+const generateId = () => {
+  const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => n.id))
+    : 0
+  return maxId + 1
+}
 
+app.post('/api/notes', (request, response) => {
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  const note = {
+    content: body.content,
+    important: body.important || false,
+    date: new Date(),
+    id: generateId(),
+  }
+
+  notes = notes.concat(note)
+
+  response.json(note)
+})
+```
 
 To test this in the VSCode REST client, we can use a `.post` file with the request specified in the following format (request method, headers and body):
 
@@ -288,4 +319,36 @@ Content-Type: application/json
 ```
 
 Multiple requests can be sent by using the `###` seperator.
+
+## Properties of HTTP request types
+
+HTTP standard discusses two properties related to request types:
+
+ 1. **safety**: the request does not cause any side effects in the server, meaning the state of the database does not change and the response only returns data that already exists on the server
+     - GET requests are safe when used in adherence to RESTful principles
+     - HEAD requests are similar to GET requests, but the response body is not returned, only the status code and headers (they are generally also considered safe)
+     - Other request types are not necessarily safe
+ 2. **idempotence**: the side effects of N > 0 identical requests is the same as for a single request
+     - True of GET, HEAD, PUT and DELETE requests when adhering to RESTful principles, but not of POST requests
+
+## Middleware
+
+Middleware are functions that are used for handling `request` and `response` objects (e.g. `json-parser` which converts raw JSON data into a JavaScript object).
+
+Several middleware can be used at the same time, executed in the order they are taken into use in express (with the `use` object). Middleware functions can be taken into use either before or after route event handlers are called, depending on whether we want them to be executed before the route event handlers are called, or afterwards (e.g. to catch requests made to non-existent routes).
+
+Custom middleware can also be written. The middleware below prints information about the request sent to the server. `next()` is used to yield control to the next middleware.
+
+```javascript
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)
+```
+
 
