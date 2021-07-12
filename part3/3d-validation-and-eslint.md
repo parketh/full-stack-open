@@ -35,3 +35,23 @@ Promise chaining can be used to conduct asynchronous operations that have to be 
 ## Validation for duplicates
 
 We can use `mongoose-unique-validator` to build in pre-save validation for unique fields within a Mongoose schema (e.g. `name` cannot be the same as an entry already in the database). 
+
+## Lint
+
+Lint is a tool that detects and flags errors in programming languages, including stylistic errors. Linters perform static analysis of the source code (i.e. without actually compiling the program). 
+
+ESLint is used for static analysis in JavaScript.
+
+**Installation**
+```
+npm install eslint --save-dev
+```
+
+**Initial configuration**
+```
+node_modules/.bin/eslint --init
+```
+
+After answering the questions, this creates a linting file that is saved in `\node_modules\.bin\eslint`. The following can be run to start linting: `node_modules/.bin/eslint index.js`. Or alternatively, the following can be added to `package.json`, in combination with a `eslintignore` file to exclude checking of certain files (e.g. the build directory).
+
+A better alternative to running `eslint` in the command line is to configure an `eslint-plugin` to the editor so that it runs continuously. The settings can be configured by editing the `.eslintrc.js ` file, under `rules`. Rules can be disabled by setting their value to `0`.
