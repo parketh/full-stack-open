@@ -137,7 +137,7 @@ const Note = require('./models/note')
 We can then also store the MongoDB `url` in an environment variable, which can be set:
 
  - locally, be installing dotenv (`npm install dotenv`) and creating a `env` file at the root of the project containing `MONGODB_URI='mongodb+srv://fullstack:sekred@cluster0-ostce.mongodb.net/note-app?retryWrites=true'`. The `.env` file should be added to `.gitignore` so that it is not uploaded to Github. The library can be added to `index.js` with the command `require('dotenv').config()`
- - on Heroku, by going to the 'Settings' tab > Config Vars 
+ - on Heroku, by running the following command in the command line `$ heroku config:set MONGODB_URI=mongodb+srv://fullstack:secretpasswordhere@cluster0-ostce.mongodb.net/note-app?retryWrites=true`
 
 **index.js**
 ```javascript

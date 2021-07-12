@@ -59,7 +59,13 @@ const App = () => {
           }, 5000)
           setNewName('')
           setNewNumber('')
-        })    
+        })
+		.catch(error => {
+			setMessage({text: JSON.stringify(error.response.data.error), color: "red"})
+			setTimeout(() => {
+				setMessage('')
+			  }, 5000)
+		})    
   }
 
   const deleteEntry = id => {
