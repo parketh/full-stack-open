@@ -5,7 +5,7 @@
 TypeScript needs to first be compiled into executable JavaScript code, which means in most production environments there needs to be a "build" step. We can use the npm package **ts-node** to compile and execute TypeScript without a seperate compilation step.
 
 **Installation**
-```javascript
+```
 // Global installation
 npm install -g ts-node typescript
 
@@ -25,7 +25,7 @@ npm install --save-dev ts-node typescript
 ```
 
 **Executing**
-```javascript
+```
 npm run ts-node -- file.ts
 ```
 
@@ -90,7 +90,7 @@ TypeScripts expects all globally used code to be typed, and the community has cr
 Typings are only used before compilation so they are only needed in `devDependencies` and not in the production build.
 
 For example:
-```javascript
+```
 npm install --save-dev @types/node
 ```
 
@@ -133,5 +133,115 @@ try {
   multiplicator(value1, value2, `Multiplied ${value1} and ${value2}, the result is:`);
 } catch (e) {
   console.log('Error, something bad happened, message: ', e.message);
+}
+```
+
+## More about tsconfig
+
+`tsconfig.json` contains configurations for how strict the TypeScript code should be inspected.
+
+## Importing packages
+
+Importing packages are a bit different in TypeScript as they depend on the export method used in the imported package: 
+
+ - In most cases, the `import ... from '...'` syntax is used
+ - If that doesn't work, try using a combined method `import ... = require('...')`
+
+In TypeScript (as in ES6 JavaScript):
+
+ - modules are executed within their own scope, meaning variables, functions and classes declared in a module are not visible outside the modules unless explicitly exported using one of the `export` forms
+ - to access these variables, functions, classes from a different module, they have to be imported using one of the `import` forms
+ - any declaration (e.g. variables, functions, type aliases, interfaces) can be exported by adding the `export` keyword in front and adding `import { ... } from ./...` to the importing module
+ - declarations can also be exported with a different name by stating `export { ... as ... };` in the exporting module
+ - importing can be done for the entire module and assigned to a single variable, by stating `import * as ... from "./..."`
+ - importing types can be done with the `import` key word or explicitly with `import type`, which guarantees removal from JavaScript
+ - each module can optionally export a `default` export marked by `default`. This is limited to one export per module.
+
+When exporting a module using `export =` syntax, it is necessary to also use TypeScript-specific syntax `import module = require("module")` to import the module.
+
+## Adding express to the mix
+
+**Installation**
+```
+npm install express
+npm install --save-dev @types/express
+```
+
+**index.ts**
+```javascript
+import express from 'express';
+const app = express();
+
+app.get('/ping', (_req, res) => {
+    res.send('pong');
+});
+
+const PORT = 3003;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+
+All front-end code will use the `import` syntax to import modules.
+
+The `app.get()` method takes two parameters as usual, but `req` is never used. To avoid the unused variable error (which we have configured to be shown in `tsconfig.json`), we can prefix it with an underscore to inform the compiler that it does not need to be used.
+
+To host an auto-reloading development environment, we can install `ts-node-dev` and add it to `scripts` under `package.json`.
+
+**Installation**
+```
+npm install --save-dev ts-node-dev
+```
+
+**package.json**
+```javascript
+{
+  // ...
+  "scripts": {
+      // ...
+      "dev": "ts-node-dev index.ts",
+  },
+  // ...
+}
+```
+
+## The horrors of `any`
+
+In TypeScript, every untyped variable whose type cannot be inferred, becomes implicitly `any` typed. Things can also be explicitly typed `any`. Implicit `any` typings are usually considered problematic as it is often due to the coder forgetting to asing types.
+
+The `noImplictAny` option exists for this reason and should be kept on at all times.
+
+However, some packages, such as the `query` field of an express `Request` object, is explicitly typed `any`. This is the same of the `request.body` field used to post data to an app. We can use `eslint` and its Typescript extensions to disallow explict `any`. 
+
+**Installation**
+```
+npm install --save-dev eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
+```
+
+**.eslintrc** 
+```javascript
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": 2
+  }
+}
+```
+
+**package.json**
+```javascript
+{
+  // ...
+  "scripts": {
+      "lint": "eslint --ext .ts ."
+      //  ...
+  },
+  // ...
 }
 ```

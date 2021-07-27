@@ -1,18 +1,18 @@
-const parseBmiArguments = (args: Array<string>): {height: number, weight: number} => {
-    if (args.length < 4) throw new Error('Not enough arguments');
-    if (args.length > 4) throw new Error('Too many arguments');
+// const parseBmiArguments = (args: Array<string>): {height: number, weight: number} => {
+//     if (args.length < 4) throw new Error('Not enough arguments');
+//     if (args.length > 4) throw new Error('Too many arguments');
   
-    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-      return {
-        height: Number(args[2]),
-        weight: Number(args[3])
-      }
-    } else {
-      throw new Error('Provided values were not numbers!');
-    }
-}
+//     if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+//       return {
+//         height: Number(args[2]),
+//         weight: Number(args[3])
+//       };
+//     } else {
+//       throw new Error('Provided values were not numbers!');
+//     }
+// };
   
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
     const bmi = weight / ((height / 100) ** 2); 
     switch (true) {
         case (bmi < 16):
@@ -31,12 +31,16 @@ const calculateBmi = (height: number, weight: number): string => {
             return "Obese (Class II)";
         case (bmi >= 45):
             return "Obese (Class III)";
+        default:
+            throw new Error('Provided values are invalid!');
     }
-}
+};
 
-try {
-    const { height, weight } = parseBmiArguments(process.argv);
-    console.log(calculateBmi(height, weight));
-} catch (e) {
-    console.log(e.message);
-}
+// try {
+//     const { height, weight } = parseBmiArguments(process.argv);
+//     console.log(calculateBmi(height, weight));
+// } catch (e) {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+//     console.log(e.message);
+// }

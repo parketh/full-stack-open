@@ -1,7 +1,7 @@
-interface Input {
-    dailyHours: Array<number>,
-    targetHours: number
-}
+// interface Input {
+//     dailyHours: Array<number>,
+//     targetHours: number
+// }
 
 interface Result {
     periodLength: number,
@@ -13,24 +13,24 @@ interface Result {
     average: number
 }
 
-const parseExerciseArguments = (args: Array<string>): Input => {
-    if (args.length < 4) throw new Error('Not enough arguments');
+// const parseExerciseArguments = (args: Array<string>): Input => {
+//     if (args.length < 4) throw new Error('Not enough arguments');
   
-    args.slice(2).forEach((arg) => {
-        if (isNaN(Number(arg))) {
-            throw new Error('Provided values were not numbers');
-        }
-    })
+//     args.slice(2).forEach((arg) => {
+//         if (isNaN(Number(arg))) {
+//             throw new Error('Provided values were not numbers');
+//         }
+//     });
 
-    return {
-        dailyHours: args.slice(3).map(a => Number(a)),
-        targetHours: Number(args[2])
-    }
-}
+//     return {
+//         dailyHours: args.slice(3).map(a => Number(a)),
+//         targetHours: Number(args[2])
+//     };
+// };
 
-const calculateExercises = (dailyHours: Array<number>, targetHours: number): Result => {
+export const calculateExercises = (dailyHours: Array<number>, targetHours: number): Result => {
     
-    const periodLength = dailyHours.length
+    const periodLength = dailyHours.length;
     
     const trainingDays = dailyHours.map((hour) => {
         if (hour > 0) {
@@ -40,22 +40,22 @@ const calculateExercises = (dailyHours: Array<number>, targetHours: number): Res
         } else {
             throw new Error('Negative number provided, replaced with 0!');
         }
-    }).reduce((a, b) => a + b, 0)
+    }).reduce((a, b) => a + b, 0);
 
-    const average = dailyHours.reduce((a, b) => a + b, 0) / periodLength
+    const average = dailyHours.reduce((a, b) => a + b, 0) / periodLength;
 
     let rating;
     let ratingDescription;
 
     if (average > targetHours * 1.2) {
-        rating = 3
-        ratingDescription = "Target exceeded, well done!"
+        rating = 3;
+        ratingDescription = "Target exceeded, well done!";
     } else if (average > targetHours * 0.95) {
-        rating = 2
-        ratingDescription = "Target reached"
+        rating = 2;
+        ratingDescription = "Target reached";
     } else {
-        rating = 1
-        ratingDescription = "Target not reached"
+        rating = 1;
+        ratingDescription = "Target not reached";
     }
     
     return {
@@ -66,12 +66,14 @@ const calculateExercises = (dailyHours: Array<number>, targetHours: number): Res
         ratingDescription: ratingDescription,
         target: targetHours,
         average: average
-    }
-}
+    };
+};
 
-try {
-    const { dailyHours, targetHours } = parseExerciseArguments(process.argv)
-    console.log(calculateExercises(dailyHours, targetHours));
-} catch (e) {
-    console.log(e.message);
-}
+// try {
+//     const { dailyHours, targetHours } = parseExerciseArguments(process.argv);
+//     console.log(calculateExercises(dailyHours, targetHours));
+// } catch (e) {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any    
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+//     console.log(e.message);
+// }
